@@ -1,4 +1,4 @@
-require 'rspec'
-require 'cypress_rails/version'
+# frozen_string_literal: true
 
-include CypressRails
+require "rspec"
+Dir[File.expand_path("support/**/*.rb", __dir__)].each { |file| require file }
