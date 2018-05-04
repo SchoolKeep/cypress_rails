@@ -61,7 +61,7 @@ module CypressRails
       server = ::TCPServer.new(host, 0)
       server.addr[1]
     ensure
-      server&.close
+      server.close if server
     end
 
     def configuration
