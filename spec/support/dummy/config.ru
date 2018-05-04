@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 run ->(_env) {
-  sleep 1
+  sleep 0.2
   [
     200,
     { "Content-Type" => "text/html" },
