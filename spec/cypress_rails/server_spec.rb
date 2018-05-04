@@ -9,10 +9,6 @@ RSpec.describe CypressRails::Server do
   describe "#port" do
     subject(:port) { described_class.new("localhost").port }
 
-    it "assigns a port number from the ephemeral range" do
-      expect(49152..65535).to cover(port)
-    end
-
     it { is_expected.to be_open_port }
   end
 
