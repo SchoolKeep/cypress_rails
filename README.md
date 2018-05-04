@@ -4,7 +4,7 @@
 * [Documentation](http://rubydoc.info/gems/cypress_rails/frames)
 * [Email](mailto:szymon@szeliga.co)
 
-[![Build Status](https://secure.travis-ci.org/Szeliga/cypress_rails.svg?branch=master)](https://travis-ci.org/Szeliga/cypress_rails)
+[![CircleCI](https://circleci.com/gh/Szeliga/cypress_rails/tree/master.svg?style=svg)](https://circleci.com/gh/Szeliga/cypress_rails/tree/master)
 [![Code Climate GPA](https://codeclimate.com/github/Szeliga/cypress_rails/badges/gpa.svg)](https://codeclimate.com/github/Szeliga/cypress_rails)
 
 ## Description
