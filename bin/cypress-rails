@@ -1,0 +1,5 @@
+#!/usr/bin/env ruby
+
+require "cypress_rails/cli"
+
+CypressRails::CLI.start(ARGV)

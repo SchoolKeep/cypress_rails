@@ -3,3 +3,5 @@
 /html/
 /pkg/
 /vendor/cache/*.gem
+**/node_modules/
+spec/support/dummy/cypress/videos/

@@ -5,6 +5,15 @@ run ->(_env) {
   [
     200,
     { "Content-Type" => "text/html" },
-    ["OK"]
+    [
+      <<~HTML
+        <html>
+          <head><title>Dummy app</title></head>
+          <body>
+            <h1>Hello Dummy!</h1>
+          </body>
+        </html>
+      HTML
+    ]
   ]
 }

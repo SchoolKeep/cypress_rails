@@ -2,22 +2,36 @@ version: 2
 jobs:
   build:
     docker:
-       - image: circleci/ruby:2
+       - image: circleci/ruby:2-node
     working_directory: ~/repo
     steps:
       - checkout
+      - sudo apt-get update
+      - sudo apt-get install xvfb libgtk2.0-0 libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2
       - restore_cache:
           keys:
           - v1-dependencies-{{ checksum "Gemfile.lock" }}
           - v1-dependencies-
+      - restore_cache:
+          keys:
+          - v1-node-modules-{{ checksum "./spec/support/dummy/yarn.lock" }}
+          - v1-node-modules-
       - run:
           name: install dependencies
           command: |
             bundle install --jobs=4 --retry=3 --path vendor/bundle
+      - run:
+          name: Install node dependencies
+          command: |
+            cd spec/support/dummy && yarn install && nppx cypress install && cd -
       - save_cache:
           paths:
             - ./vendor/bundle
           key: v1-dependencies-{{ checksum "Gemfile.lock" }}
+      - save_cache:
+          paths:
+            - ./spec/support/dummy/node_modules
+          key: v1-node-dependencies-{{ checksum "./spec/support/dummy/yarn.lock" }}
       - run:
           name: run tests
           command: |

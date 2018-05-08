@@ -6,11 +6,13 @@ module CypressRails
   class Server
     extend Forwardable
 
-    attr_reader :host, :port
+    attr_reader :host, :port, :command, :log_path
 
-    def initialize(host)
+    def initialize(host, command, log_path)
       @host = host
       @port = find_free_port
+      @command = command
+      @log_path = log_path
     end
 
     def start
@@ -18,17 +20,14 @@ module CypressRails
       until server_responsive?
         sleep 0.1
       end
-      yield if block_given?
+      yield(host, port) if block_given?
+    ensure
       stop_server
     end
 
     private
 
     attr_reader :pid
-
-    def_delegators :configuration,
-      :server_command,
-      :log_path
 
     def spawn_server
       @pid = Process.spawn(
@@ -48,13 +47,11 @@ module CypressRails
     end
 
     def stop_server
-      Process.kill("SIGINT", pid)
+      Process.kill("SIGINT", pid) if pid
     end
 
     def build_command
-      command = [server_command]
-      command << "--port #{port}"
-      command.join(" ")
+      "#{command} --port #{port}"
     end
 
     def find_free_port
@@ -62,10 +59,6 @@ module CypressRails
       server.addr[1]
     ensure
       server.close if server
-    end
-
-    def configuration
-      CypressRails.configuration
     end
   end
 end
