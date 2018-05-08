@@ -23,7 +23,7 @@ jobs:
       - run:
           name: Install node dependencies
           command: |
-            cd spec/support/dummy && yarn install && nppx cypress install && cd -
+            cd spec/support/dummy && yarn install && npx cypress install && cd -
       - save_cache:
           paths:
             - ./vendor/bundle
