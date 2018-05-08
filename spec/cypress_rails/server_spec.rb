@@ -6,7 +6,7 @@ require "cypress_rails/server"
 
 RSpec.describe CypressRails::Server do
   let(:host) { "localhost" }
-  let(:command) { "rackup spec/support/dummy/config.ru" }
+  let(:command) { "rackup spec/support/dummy_passing/config.ru" }
   let(:log_path) { "/dev/null" }
 
   describe "#port" do

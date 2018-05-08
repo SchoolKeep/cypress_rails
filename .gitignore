@@ -4,4 +4,5 @@
 /pkg/
 /vendor/cache/*.gem
 **/node_modules/
-spec/support/dummy/cypress/videos/
+**/cypress/videos/
+**/cypress/screenshots/

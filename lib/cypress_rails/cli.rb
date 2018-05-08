@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "thor"
+require "cypress_rails/runner"
 require "cypress_rails/server"
 
 module CypressRails
@@ -36,7 +37,7 @@ module CypressRails
     desc "test", "Run all tests in headless mode"
     def test
       server.start do |host, port|
-        system("curl http://#{host}:#{port}")
+        exit Runner.new(host: host, port: port, command: config.cypress_command).run
       end
     end
 

@@ -6,20 +6,78 @@ require "cypress_rails/runner"
 
 RSpec.describe CypressRails::Runner do
   let(:host) { "localhost" }
-  let(:command) { "rackup spec/support/dummy/config.ru" }
   let(:log_path) { "/dev/null" }
   let(:pipe) { IO.pipe }
   let(:w) { pipe[1] }
   let(:r) { pipe[0] }
 
-  it "runs cypress correctly" do
-    CypressRails::Server.new(host, command, log_path).start do |host, port|
-      CypressRails::Runner.new(host: host, port: port, output: w).run
+  context "when tests are passing" do
+    let(:command) { "rackup spec/support/dummy_passing/config.ru" }
+
+    it "runs cypress correctly" do
+      CypressRails::Server.new(host, command, log_path).start do |host, port|
+        CypressRails::Runner.new(
+          host: host,
+          port: port,
+          command: "cd spec/support/dummy_passing && npx cypress run",
+          output: w
+        ).run
+      end
+      result = r.read
+      expect(result).to match(/Visiting the root address/)
+      expect(result).to match(/renders OK/)
+      expect(result).to match(/\(Tests Finished\)/)
+      r.close
     end
-    result = r.read
-    expect(result).to match(/Visiting the root address/)
-    expect(result).to match(/renders OK/)
-    expect(result).to match(/\(Tests Finished\)/)
-    r.close
+
+    it "returns status code 0" do
+      status = nil
+      CypressRails::Server.new(host, command, log_path).start do |host, port|
+        status = CypressRails::Runner.new(
+          host: host,
+          port: port,
+          command: "cd spec/support/dummy_passing && npx cypress run",
+          output: w
+        ).run
+      end
+      r.read
+      r.close
+      expect(status).to eq 0
+    end
+  end
+
+  context "when tests are failing" do
+    let(:command) { "rackup spec/support/dummy_failing/config.ru" }
+
+    it "runs cypress correctly" do
+      CypressRails::Server.new(host, command, log_path).start do |host, port|
+        CypressRails::Runner.new(
+          host: host,
+          port: port,
+          command: "cd spec/support/dummy_failing && npx cypress run",
+          output: w
+        ).run
+      end
+      result = r.read
+      expect(result).to match(/Visiting the root address/)
+      expect(result).to match(/renders OK/)
+      expect(result).to match(/\(Tests Finished\)/)
+      r.close
+    end
+
+    it "returns non-zero status code" do
+      status = nil
+      CypressRails::Server.new(host, command, log_path).start do |host, port|
+        status = CypressRails::Runner.new(
+          host: host,
+          port: port,
+          command: "cd spec/support/dummy_failing && npx cypress run",
+          output: w
+        ).run
+      end
+      r.read
+      r.close
+      expect(status).not_to eq 0
+    end
   end
 end

@@ -10,28 +10,40 @@ jobs:
       - run: sudo apt-get install xvfb libgtk2.0-0 libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "Gemfile.lock" }}
+          - v1-dependencies-{{ checksum "cypress_rails.gemspec" }}
           - v1-dependencies-
       - restore_cache:
           keys:
-          - v1-node-modules-{{ checksum "./spec/support/dummy/yarn.lock" }}
-          - v1-node-modules-
+          - v1-passing-node-modules-{{ checksum "./spec/support/dummy_passing/yarn.lock" }}
+          - v1-passing-node-modules-
+      - restore_cache:
+          keys:
+          - v1-failing-node-modules-{{ checksum "./spec/support/dummy_failing/yarn.lock" }}
+          - v1-failing-node-modules-
       - run:
           name: install dependencies
           command: |
             bundle install --jobs=4 --retry=3 --path vendor/bundle
       - run:
-          name: Install node dependencies
+          name: Install passing node dependencies
           command: |
-            cd spec/support/dummy && yarn install && npx cypress install && cd -
+            cd spec/support/dummy_passing && yarn install && npx cypress install && cd -
+      - run:
+          name: Install failing node dependencies
+          command: |
+            cd spec/support/dummy_failing && yarn install && npx cypress install && cd -
       - save_cache:
           paths:
             - ./vendor/bundle
           key: v1-dependencies-{{ checksum "Gemfile.lock" }}
       - save_cache:
           paths:
-            - ./spec/support/dummy/node_modules
-          key: v1-node-dependencies-{{ checksum "./spec/support/dummy/yarn.lock" }}
+            - ./spec/support/dummy_passing/node_modules
+          key: v1-passing-node-dependencies-{{ checksum "./spec/support/dummy_passing/yarn.lock" }}
+      - save_cache:
+          paths:
+            - ./spec/support/dummy_failing/node_modules
+          key: v1-failing-node-dependencies-{{ checksum "./spec/support/dummy_failing/yarn.lock" }}
       - run:
           name: run tests
           command: |

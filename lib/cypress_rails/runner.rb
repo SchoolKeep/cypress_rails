@@ -2,9 +2,10 @@
 
 module CypressRails
   class Runner
-    def initialize(host:, port:, output: IO.new(1))
+    def initialize(host:, port:, command: "npx cypress", output: IO.new(1))
       @host = host
       @port = port
+      @command = command
       @output = output
     end
 
@@ -14,16 +15,17 @@ module CypressRails
           "CYPRESS_app_host" => host,
           "CYPRESS_app_port" => port.to_s,
         },
-        "cd spec/support/dummy && npx cypress run && cd -",
+        command,
         out: output,
         err: [:child, :out]
       )
       output.close
-      Process.wait(pid)
+      _, status = Process.wait2(pid)
+      status.exitstatus
     end
 
     private
 
-    attr_reader :host, :port, :output
+    attr_reader :host, :port, :command, :output
   end
 end
