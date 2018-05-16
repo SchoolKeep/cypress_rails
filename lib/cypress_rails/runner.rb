@@ -2,10 +2,11 @@
 
 module CypressRails
   class Runner
-    def initialize(host:, port:, command: "npx cypress", output: IO.new(1))
+    def initialize(host:, port:, bin_path: "npx cypress", tests_path:, output: IO.new(1))
       @host = host
       @port = port
-      @command = command
+      @bin_path = bin_path
+      @tests_path = tests_path
       @output = output
     end
 
@@ -15,7 +16,7 @@ module CypressRails
           "CYPRESS_app_host" => host,
           "CYPRESS_app_port" => port.to_s,
         },
-        command,
+        [bin_path, "run", "-P #{tests_path}"].join(" "),
         out: output,
         err: [:child, :out]
       )
@@ -24,8 +25,22 @@ module CypressRails
       status.exitstatus
     end
 
+    def open
+      pid = Process.spawn(
+        {
+          "CYPRESS_app_host" => host,
+          "CYPRESS_app_port" => port.to_s,
+        },
+        [bin_path, "open", "-P #{tests_path}"].join(" "),
+        out: output,
+        err: [:child, :out]
+      )
+      output.close
+      Process.wait(pid)
+    end
+
     private
 
-    attr_reader :host, :port, :command, :output
+    attr_reader :host, :port, :bin_path, :tests_path, :output
   end
 end

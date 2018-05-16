@@ -5,15 +5,15 @@ require "cypress_rails/runner"
 require "cypress_rails/server"
 
 module CypressRails
-  Config = Struct.new(:command, :cypress_command, :host, :log_path, :test_path)
+  Config = Struct.new(:command, :cypress_bin_path, :host, :log_path, :tests_path)
 
   class CLI < Thor
     class_option :command,
-      required: true,
       type: :string,
       desc: "command to start the server",
+      default: "bundle exec rails server",
       aliases: %w(-c)
-    class_option :cypress_command,
+    class_option :cypress_bin_path,
       type: :string,
       desc: "command to run cypress",
       default: "npx cypress",
@@ -28,22 +28,28 @@ module CypressRails
       desc: "path to the log file for the server",
       default: "/dev/null",
       aliases: %w(-l)
-    class_option :test_path,
+    class_option :tests_path,
       type: :string,
       desc: "path to Cypress tests",
-      default: "./spec/cypress",
+      default: "./spec",
       aliases: %w(-t)
 
     desc "test", "Run all tests in headless mode"
     def test
       server.start do |host, port|
-        exit Runner.new(host: host, port: port, command: config.cypress_command).run
+        exit Runner.new(
+          host: host, port: port, bin_path: config.cypress_bin_path, tests_path: config.tests_path
+        ).run
       end
     end
 
     desc "open", "Start the server and open Cypress Dashboard"
     def open
-      puts options
+      server.start do |host, port|
+        exit Runner.new(
+          host: host, port: port, bin_path: config.cypress_bin_path, tests_path: config.tests_path
+        ).open
+      end
     end
 
     private
@@ -54,7 +60,7 @@ module CypressRails
 
     def config
       @config ||= Config.new(
-        *options.values_at(:command, :cypress_command, :host, :log_path, :test_path)
+        *options.values_at(:command, :cypress_bin_path, :host, :log_path, :tests_path)
       )
     end
   end

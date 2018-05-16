@@ -7,19 +7,23 @@ require "cypress_rails/runner"
 RSpec.describe CypressRails::Runner do
   let(:host) { "localhost" }
   let(:log_path) { "/dev/null" }
+  let(:bin_path) { "cd #{project_path} && npx cypress" }
+  let(:tests_path) { "." }
   let(:pipe) { IO.pipe }
   let(:w) { pipe[1] }
   let(:r) { pipe[0] }
 
   context "when tests are passing" do
-    let(:command) { "rackup spec/support/dummy_passing/config.ru" }
+    let(:project_path) { "spec/support/dummy_passing" }
+    let(:server) { "rackup #{project_path}/config.ru" }
 
     it "runs cypress correctly" do
-      CypressRails::Server.new(host, command, log_path).start do |host, port|
+      CypressRails::Server.new(host, server, log_path).start do |host, port|
         CypressRails::Runner.new(
           host: host,
           port: port,
-          command: "cd spec/support/dummy_passing && npx cypress run",
+          bin_path: bin_path,
+          tests_path: tests_path,
           output: w
         ).run
       end
@@ -32,11 +36,12 @@ RSpec.describe CypressRails::Runner do
 
     it "returns status code 0" do
       status = nil
-      CypressRails::Server.new(host, command, log_path).start do |host, port|
+      CypressRails::Server.new(host, server, log_path).start do |host, port|
         status = CypressRails::Runner.new(
           host: host,
           port: port,
-          command: "cd spec/support/dummy_passing && npx cypress run",
+          bin_path: bin_path,
+          tests_path: tests_path,
           output: w
         ).run
       end
@@ -47,14 +52,16 @@ RSpec.describe CypressRails::Runner do
   end
 
   context "when tests are failing" do
-    let(:command) { "rackup spec/support/dummy_failing/config.ru" }
+    let(:project_path) { "spec/support/dummy_failing" }
+    let(:server) { "rackup #{project_path}/config.ru" }
 
     it "runs cypress correctly" do
-      CypressRails::Server.new(host, command, log_path).start do |host, port|
+      CypressRails::Server.new(host, server, log_path).start do |host, port|
         CypressRails::Runner.new(
           host: host,
           port: port,
-          command: "cd spec/support/dummy_failing && npx cypress run",
+          bin_path: bin_path,
+          tests_path: tests_path,
           output: w
         ).run
       end
@@ -67,11 +74,12 @@ RSpec.describe CypressRails::Runner do
 
     it "returns non-zero status code" do
       status = nil
-      CypressRails::Server.new(host, command, log_path).start do |host, port|
+      CypressRails::Server.new(host, server, log_path).start do |host, port|
         status = CypressRails::Runner.new(
           host: host,
           port: port,
-          command: "cd spec/support/dummy_failing && npx cypress run",
+          bin_path: bin_path,
+          tests_path: tests_path,
           output: w
         ).run
       end
