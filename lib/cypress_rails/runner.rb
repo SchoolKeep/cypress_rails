@@ -15,6 +15,7 @@ module CypressRails
         {
           "CYPRESS_app_host" => host,
           "CYPRESS_app_port" => port.to_s,
+          "CYPRESS_baseUrl" => "http://#{host}:#{port}"
         },
         [bin_path, "run", "-P #{tests_path}"].join(" "),
         out: output,
@@ -30,6 +31,7 @@ module CypressRails
         {
           "CYPRESS_app_host" => host,
           "CYPRESS_app_port" => port.to_s,
+          "CYPRESS_baseUrl" => "http://#{host}:#{port}"
         },
         [bin_path, "open", "-P #{tests_path}"].join(" "),
         out: output,

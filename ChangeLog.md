@@ -1,3 +1,11 @@
+### 0.4.0 / 2018-05-17
+
+* Integrate the gem with Rails and hook up a middleware for: 
+  * reseting the database
+  * calling "seed" files
+* Added configuration object with `before_each` option which takes a block of code to be executed
+    before each example
+
 ### 0.3.0 / 2018-05-16
 
 * Added more options to the CLI
