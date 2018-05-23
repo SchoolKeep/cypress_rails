@@ -11,7 +11,7 @@ module CypressRails
 
       if cypress_rails_url?(request.path)
         setup! if setup_url?(request.path)
-        seed!(request) if seed_url?(request.path)
+        execute_script!(request) if scripts_url?(request.path)
         return [
           201,
           { "Content-Type" => "text/html" },
@@ -32,17 +32,17 @@ module CypressRails
       path.gsub("/__cypress_rails__/", "") == "setup"
     end
 
-    def seed_url?(path)
-      path.gsub("/__cypress_rails__/", "") == "seeds"
+    def scripts_url?(path)
+      path.gsub("/__cypress_rails__/", "") == "scripts"
     end
 
     def setup!
       reset_db!
     end
 
-    def seed!(request)
+    def execute_script!(request)
       body = JSON.parse(request.body.read)
-      CypressRails.seeds(body.fetch("seed")).call
+      CypressRails.scripts(body.fetch("name")).call
     end
 
     def reset_db!

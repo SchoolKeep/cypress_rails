@@ -5,9 +5,21 @@ require "cypress_rails/railtie"
 require "cypress_rails/configuration"
 
 module CypressRails
-
-  def seeds(name)
-    instance_eval File.read("spec/cypress/seeds/#{name}.rb")
+  class << self
+    attr_accessor :configuration
   end
-  module_function :seeds
+
+  def self.configure
+    self.configuration ||= Configuration.new
+    yield(configuration)
+  end
+
+
+  def scripts(name)
+    path = Pathname.new(configuration.scripts_path).join("#{name}.rb")
+    instance_eval File.read(
+      path
+    )
+  end
+  module_function :scripts
 end

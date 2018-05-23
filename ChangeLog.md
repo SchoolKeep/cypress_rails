@@ -1,3 +1,8 @@
+### 0.4.1 / 2018-05-23
+
+* renamed `seeds` to `scripts`
+* added `scripts_path` to config, it defaults to `spec/cypress/scripts`
+
 ### 0.4.0 / 2018-05-17
 
 * Integrate the gem with Rails and hook up a middleware for: 
