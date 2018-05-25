@@ -11,13 +11,15 @@ module CypressRails
     end
 
     def run
+      command = [bin_path, "run", "-P #{tests_path}"]
+      command << "--record" if ENV.fetch("CYPRESS_RECORD_KEY", false)
       pid = Process.spawn(
         {
           "CYPRESS_app_host" => host,
           "CYPRESS_app_port" => port.to_s,
           "CYPRESS_baseUrl" => "http://#{host}:#{port}"
         },
-        [bin_path, "run", "-P #{tests_path}"].join(" "),
+        command.join(" "),
         out: output,
         err: [:child, :out]
       )

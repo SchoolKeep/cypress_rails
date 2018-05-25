@@ -1,3 +1,7 @@
+### 0.4.2 / 2018-05-25
+
+* add --record to cypress when CYPRESS_RECORD_KEY is present in #run method
+
 ### 0.4.1 / 2018-05-23
 
 * renamed `seeds` to `scripts`
