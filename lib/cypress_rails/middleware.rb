@@ -42,7 +42,15 @@ module CypressRails
 
     def execute_script!(request)
       body = JSON.parse(request.body.read)
-      CypressRails.scripts(body.fetch("name")).call
+      script = CypressRails.scripts(body.fetch("name"))
+
+      params = body.fetch("params", {})
+
+      if params.any?
+        script.call(params)
+      else
+        script.call
+      end
     end
 
     def reset_db!
