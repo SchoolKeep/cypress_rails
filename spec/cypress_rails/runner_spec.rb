@@ -18,7 +18,7 @@ RSpec.describe CypressRails::Runner do
     let(:server) { "rackup #{project_path}/config.ru" }
 
     it "runs cypress correctly" do
-      CypressRails::Server.new(host, server, log_path).start do |host, port|
+      CypressRails::Server.new(host, server, nil, log_path).start do |host, port|
         CypressRails::Runner.new(
           host: host,
           port: port,
@@ -36,7 +36,7 @@ RSpec.describe CypressRails::Runner do
 
     it "returns status code 0" do
       status = nil
-      CypressRails::Server.new(host, server, log_path).start do |host, port|
+      CypressRails::Server.new(host, server, nil, log_path).start do |host, port|
         status = CypressRails::Runner.new(
           host: host,
           port: port,
@@ -56,7 +56,7 @@ RSpec.describe CypressRails::Runner do
     let(:server) { "rackup #{project_path}/config.ru" }
 
     it "runs cypress correctly" do
-      CypressRails::Server.new(host, server, log_path).start do |host, port|
+      CypressRails::Server.new(host, server, nil, log_path).start do |host, port|
         CypressRails::Runner.new(
           host: host,
           port: port,
@@ -74,7 +74,7 @@ RSpec.describe CypressRails::Runner do
 
     it "returns non-zero status code" do
       status = nil
-      CypressRails::Server.new(host, server, log_path).start do |host, port|
+      CypressRails::Server.new(host, server, nil, log_path).start do |host, port|
         status = CypressRails::Runner.new(
           host: host,
           port: port,
