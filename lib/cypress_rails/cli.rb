@@ -5,7 +5,9 @@ require "cypress_rails/runner"
 require "cypress_rails/server"
 
 module CypressRails
-  Config = Struct.new(:command, :cypress_bin_path, :host, :log_path, :tests_path)
+  Config = Struct.new(
+    :command, :cypress_bin_path, :host, :log_path, :tests_path, :healthcheck_url
+  )
 
   class CLI < Thor
     class_option :command,
@@ -33,6 +35,12 @@ module CypressRails
       desc: "path to Cypress tests",
       default: "./spec",
       aliases: %w(-t)
+    class_option :healthcheck_url,
+      type: :string,
+      desc: <<~DESC,
+        url to ping the server before running tests (you don't need the port, it will be injected)
+      DESC
+      aliases: %w(-u)
 
     desc "test", "Run all tests in headless mode"
     def test
@@ -55,12 +63,14 @@ module CypressRails
     private
 
     def server
-      @server ||= Server.new(config.host, config.command, config.log_path)
+      @server ||= Server.new(config.host, config.command, config.healthcheck_url, config.log_path)
     end
 
     def config
       @config ||= Config.new(
-        *options.values_at(:command, :cypress_bin_path, :host, :log_path, :tests_path)
+        *options.values_at(
+          :command, :cypress_bin_path, :host, :log_path, :tests_path, :healthcheck_url
+        )
       )
     end
   end
