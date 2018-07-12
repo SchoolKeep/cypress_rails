@@ -10,9 +10,11 @@ module CypressRails
       @output = output
     end
 
-    def run
+    def run(browser = "chrome")
       command = [bin_path, "run", "-P #{tests_path}"]
+      command << "--browser #{browser}" if %w(chrome electron).include?(browser)
       command << "--record" if ENV.fetch("CYPRESS_RECORD_KEY", false)
+      command << "--config video=false" if browser == "chrome"
       pid = Process.spawn(
         {
           "CYPRESS_app_host" => host,

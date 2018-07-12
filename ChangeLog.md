@@ -1,3 +1,8 @@
+### 0.7.0 / 2018-07-12
+
+* add --browser option and pass the selected browser to the run method
+  if selected browser is chrome, don't record video
+
 ### 0.4.2 / 2018-05-25
 
 * add --record to cypress when CYPRESS_RECORD_KEY is present in #run method

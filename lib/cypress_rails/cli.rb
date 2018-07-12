@@ -6,7 +6,7 @@ require "cypress_rails/server"
 
 module CypressRails
   Config = Struct.new(
-    :command, :cypress_bin_path, :host, :log_path, :tests_path, :healthcheck_url
+    :command, :cypress_bin_path, :host, :log_path, :tests_path, :healthcheck_url, :browser
   )
 
   class CLI < Thor
@@ -41,13 +41,20 @@ module CypressRails
         url to ping the server before running tests (you don't need the port, it will be injected)
       DESC
       aliases: %w(-u)
+    class_option :browser,
+      type: :string,
+      desc: <<~DESC,
+        which browser to use with test command, allowed values: chrome, electron
+      DESC
+      default: "chrome",
+      aliases: %w(-b)
 
     desc "test", "Run all tests in headless mode"
     def test
       server.start do |host, port|
         exit Runner.new(
           host: host, port: port, bin_path: config.cypress_bin_path, tests_path: config.tests_path
-        ).run
+        ).run(config.browser)
       end
     end
 
@@ -69,7 +76,7 @@ module CypressRails
     def config
       @config ||= Config.new(
         *options.values_at(
-          :command, :cypress_bin_path, :host, :log_path, :tests_path, :healthcheck_url
+          :command, :cypress_bin_path, :host, :log_path, :tests_path, :healthcheck_url, :browser
         )
       )
     end

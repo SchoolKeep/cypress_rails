@@ -25,7 +25,7 @@ RSpec.describe CypressRails::Runner do
           bin_path: bin_path,
           tests_path: tests_path,
           output: w
-        ).run
+        ).run("electron")
       end
       result = r.read
       expect(result).to match(/Visiting the root address/)
@@ -43,7 +43,7 @@ RSpec.describe CypressRails::Runner do
           bin_path: bin_path,
           tests_path: tests_path,
           output: w
-        ).run
+        ).run("electron")
       end
       r.read
       r.close
@@ -63,7 +63,7 @@ RSpec.describe CypressRails::Runner do
           bin_path: bin_path,
           tests_path: tests_path,
           output: w
-        ).run
+        ).run("electron")
       end
       result = r.read
       expect(result).to match(/Visiting the root address/)
@@ -81,7 +81,7 @@ RSpec.describe CypressRails::Runner do
           bin_path: bin_path,
           tests_path: tests_path,
           output: w
-        ).run
+        ).run("electron")
       end
       r.read
       r.close
