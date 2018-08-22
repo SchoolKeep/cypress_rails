@@ -14,6 +14,7 @@ module CypressRails
       command = [bin_path, "run", "-P #{tests_path}"]
       command << "--browser #{browser}" if %w(chrome electron).include?(browser)
       command << "--record" if ENV.fetch("CYPRESS_RECORD_KEY", false)
+      command << "--parallel" if ENV.fetch("CYPRESS_PARALLEL", false)
       command << "--config video=false" if browser == "chrome"
       pid = Process.spawn(
         {
