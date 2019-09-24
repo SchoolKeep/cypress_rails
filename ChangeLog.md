@@ -1,3 +1,7 @@
+### 0.9.0 / 2019-09-24
+
+* don't pass -P flag to set tests path, instead rely on the config inside cypress.json
+
 ### 0.7.0 / 2018-07-12
 
 * add --browser option and pass the selected browser to the run method
