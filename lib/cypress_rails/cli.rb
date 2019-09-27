@@ -33,7 +33,7 @@ module CypressRails
     class_option :tests_path,
       type: :string,
       desc: "path to Cypress tests",
-      default: "./spec",
+      default: "./",
       aliases: %w(-t)
     class_option :healthcheck_url,
       type: :string,
